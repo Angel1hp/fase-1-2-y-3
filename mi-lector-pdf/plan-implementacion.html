@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Implementación - Mi Lector PDF</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --azul: #0066cc;
+            --azul-hover: #0052a3;
+            --azul-claro: #eef4ff;
+            --texto-principal: #0f172a;
+            --texto-secundario: #475569;
+            --borde: #e2e8f0;
+            --fondo-carta: #ffffff;
+            --rojo-premium: #ef4444;
+            --sombra: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background-color: #f8fafc;
+            color: var(--texto-principal);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .documento-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--fondo-carta);
+            border-radius: 16px;
+            box-shadow: var(--sombra);
+            border: 1px solid var(--borde);
+            padding: 50px 40px;
+            position: relative;
+        }
+
+        /* ── Barra de Acción Superior ── */
+        .barra-accion {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--borde);
+            padding-bottom: 20px;
+        }
+
+        .badge {
+            background-color: var(--azul-claro);
+            color: var(--azul);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-imprimir {
+            background-color: var(--azul);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15);
+        }
+
+        .btn-imprimir:hover {
+            background-color: var(--azul-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.25);
+        }
+
+        .btn-imprimir:active {
+            transform: translateY(0);
+        }
+
+        /* ── Tipografía y Secciones ── */
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--texto-principal);
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .subtitulo-doc {
+            font-size: 1rem;
+            color: var(--texto-secundario);
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--azul);
+            margin-top: 30px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        p {
+            color: var(--texto-secundario);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        /* ── Alertas Premium ── */
+        .alerta-premium {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 24px;
+        }
+
+        .alerta-premium-titulo {
+            font-weight: 700;
+            color: #b45309;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alerta-premium-cuerpo {
+            font-size: 0.85rem;
+            color: #78350f;
+            line-height: 1.5;
+        }
+
+        /* ── Componentes de los Cambios ── */
+        .componente-bloque {
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .componente-nombre {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--texto-principal);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modificacion-tipo {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .modificacion-tipo.modificar {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .modificacion-tipo.nuevo {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+
+        .lista-detalles {
+            list-style-type: none;
+        }
+
+        .lista-detalles li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--texto-secundario);
+        }
+
+        .lista-detalles li::before {
+            content: "•";
+            color: var(--azul);
+            font-size: 1.2rem;
+            position: absolute;
+            left: 5px;
+            top: -2px;
+        }
+
+        /* ── Tabla de Verificación ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            margin-bottom: 24px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--borde);
+            font-size: 0.85rem;
+        }
+
+        th {
+            background-color: var(--azul-claro);
+            color: var(--azul);
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--texto-secundario);
+        }
+
+        .icono {
+            font-size: 1.1rem;
+        }
+
+        /* ── Directiva de Impresión PDF ── */
+        @media print {
+            body {
+                background-color: #ffffff;
+                padding: 0;
+            }
+
+            .documento-container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .barra-accion, .btn-imprimir {
+                display: none !important; /* Ocultar botones en impresión */
+            }
+
+            h1 {
+                font-size: 24pt;
+                margin-top: 0;
+            }
+
+            h2 {
+                page-break-after: avoid; /* Evitar que queden títulos huérfanos */
+            }
+
+            .componente-bloque {
+                page-break-inside: avoid; /* Evitar romper bloques de cambio */
+                background: #ffffff;
+                border-color: #cbd5e1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="documento-container">
+        <!-- Barra de Acción -->
+        <div class="barra-accion">
+            <span class="badge">Aprobado y Listo</span>
+            <button class="btn-imprimir" onclick="window.print()">
+                <span class="icono">📄</span> Guardar como PDF
+            </button>
+        </div>
+
+        <!-- Título -->
+        <h1>Plan de Implementación</h1>
+        <p class="subtitulo-doc">Funcionalidad de Cierre de Aplicación PWA y UX de Salida</p>
+
+        <!-- Contexto / Alerta -->
+        <div class="alerta-premium">
+            <div class="alerta-premium-titulo">
+                <span class="icono">💡</span> Comportamiento de Cierre y Seguridad del Navegador
+            </div>
+            <div class="alerta-premium-cuerpo">
+                Los navegadores modernos bloquean el comando <code>window.close()</code> en páginas estándar para evitar abusos. Nuestra solución implementa una <strong>Pantalla de Despedida (Goodbye Screen) premium</strong> con diseño de vidrio esmerilado que actúa como un fallback inteligente si no se puede cerrar la ventana de manera automática.
+            </div>
+        </div>
+
+        <!-- Sección 1 -->
+        <h2><span class="icono">🛠️</span> Cambios Realizados en el Proyecto</h2>
+        <p>Se modificaron y agregaron los siguientes componentes para dar soporte completo a la acción de salida, detección de versiones e instalación de la PWA:</p>
+
+        <!-- Bloque 1: index.html -->
+        <div class="componente-bloque">
+            <div class="componente-nombre">
+                <span>📁 index.html</span>
+                <span class="modificacion-tipo modificar">Modificado</span>
+            </div>
+            <ul class="lista-detalles">
+                <li>Inserción de una cabecera semántica <code>&lt;header class="app-header"&gt;</code> para alinear el título y agrupar las acciones.</li>
+                <li>Incorporación del contenedor <code>.header-acciones</code> que ubica de forma flexible el botón premium de salida <code>#btn-salir</code> y el nuevo botón <code>#btn-instalar</code>.</li>
+                <li>Inclusión del modal instructivo <code>#modal-instalar-ios</code> con diseño glassmorphic e instrucciones de 2 pasos detalladas para la instalación de PWA en Safari de iOS.</li>
+                <li>Inclusión del contenedor para la <strong>Pantalla de Despedida</strong> <code>#pantalla-despedida</code> con su mensaje, icono waving animado y opción para volver a la aplicación.</li>
+            </ul>
+        </div>
+
+        <!-- Bloque 2: style.css -->
+        <div class="componente-bloque">
+            <div class="componente-nombre">
+                <span>📁 style.css</span>
+                <span class="modificacion-tipo modificar">Modificado</span>
+            </div>
+            <ul class="lista-detalles">
+                <li>Definición de estilos del <code>&lt;header&gt;</code> y posicionamiento flexible de las acciones mediante <code>.header-acciones</code>.</li>
+                <li>Estilizado del botón de salida <code>.btn-salir</code> y el botón de instalación <code>.btn-instalar</code> con degradados premium e interacciones dinámicas no invasivas.</li>
+                <li>Diseño Glassmorphic (vidrio esmerilado) para la pantalla de despedida y los modales con filtros de desenfoque de fondo en tiempo real (<code>backdrop-filter</code>).</li>
+                <li>Diseño maquetado para los pasos de instalación en iPhone/iPad utilizando <code>.pasos-ios</code>, <code>.paso-ios</code>, <code>.paso-numero</code> y chapas o distintivos visuales <code>.icono-safari</code> para simular los iconos de Safari.</li>
+                <li>Animaciones de transición suave de opacidad (<code>fadeIn</code>), escalado tridimensional (<code>scaleUp</code>) y una animación interactiva tipo balanceo (<code>wave</code>) para el saludo de despedida.</li>
+            </ul>
+        </div>
+
+        <!-- Bloque 3: script.js -->
+        <div class="componente-bloque">
+            <div class="componente-nombre">
+                <span>📁 script.js</span>
+                <span class="modificacion-tipo modificar">Modificado</span>
+            </div>
+            <ul class="lista-detalles">
+                <li>Captura y referenciado de los nuevos selectores de la cabecera, el modal de cierre, el snackbar de actualización y los controles de instalación (`#btn-instalar`, `#modal-instalar-ios`).</li>
+                <li>Creación de la función <code>cerrarAplicacion()</code> que intenta cerrar la pestaña y activa la animación del modal en un retardo de 100ms si el navegador lo bloquea.</li>
+                <li>Implementación de la escucha de instalación <code>beforeinstallprompt</code> para Android y computadoras de escritorio, previniendo el comportamiento nativo y activando el botón premium interactivo en la cabecera.</li>
+                <li>Implementación de detección del sistema operativo Apple (iPhone/iPad/iPod) y verificación de estado <code>navigator.standalone</code> para forzar la aparición manual del botón de instalación e instruir al usuario mediante el modal.</li>
+                <li>Soporte de accesibilidad para la tecla <code>Escape</code> para cerrar la pantalla de despedida y la guía de instalación iOS de forma instantánea.</li>
+            </ul>
+        </div>
+
+        <!-- Bloque 4: sw.js -->
+        <div class="componente-bloque">
+            <div class="componente-nombre">
+                <span>📁 sw.js</span>
+                <span class="modificacion-tipo modificar">Modificado</span>
+            </div>
+            <ul class="lista-detalles">
+                <li>Modificación del ciclo de vida en el evento <code>install</code> para remover la activación automática e inmediata (<code>skipWaiting</code>). Esto permite retener al nuevo trabajador en espera y notificar elegantemente al usuario previo a recargar.</li>
+                <li>Adición de un escuchador para el evento <code>message</code> que captura la señal <code>SKIP_WAITING</code> enviada desde la interfaz frontend para forzar la toma de control del nuevo Service Worker de manera asíncrona.</li>
+            </ul>
+        </div>
+
+        <!-- Sección 2 -->
+        <h2><span class="icono">🧪</span> Plan de Pruebas y Validación</h2>
+        <p>A continuación se describen los escenarios de verificación ejecutados para garantizar el comportamiento óptimo de la aplicación en todos los entornos:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Escenario de Prueba</th>
+                    <th>Acción</th>
+                    <th>Resultado Esperado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cierre en Modo PWA</strong></td>
+                    <td>Ejecutar como aplicación instalada y presionar "Salir".</td>
+                    <td>La aplicación se cierra de forma instantánea y limpia.</td>
+                </tr>
+                <tr>
+                    <td><strong>Cierre en Navegador</strong></td>
+                    <td>Ejecutar en pestaña de Chrome/Edge normal y presionar "Salir".</td>
+                    <td>La pantalla se atenúa y se muestra la pantalla de despedida glassmorphic animada.</td>
+                </tr>
+                <tr>
+                    <td><strong>Acción de Retorno</strong></td>
+                    <td>Hacer clic en "Volver a la aplicación" en la despedida.</td>
+                    <td>El modal desaparece suavemente y se recupera el estado exacto del lector PDF.</td>
+                </tr>
+                <tr>
+                    <td><strong>Atajo Alt + Q</strong></td>
+                    <td>Presionar combinación <code>Alt + Q</code> en cualquier momento.</td>
+                    <td>Se ejecuta el flujo de salida de la aplicación correctamente.</td>
+                </tr>
+                <tr>
+                    <td><strong>Detección Android / PC</strong></td>
+                    <td>Navegar a la app en Chrome desde Android o un PC con Windows.</td>
+                    <td>El Service Worker emite <code>beforeinstallprompt</code> y se hace visible el botón "Instalar App".</td>
+                </tr>
+                <tr>
+                    <td><strong>Instalación Nativa</strong></td>
+                    <td>Hacer clic en "Instalar App" en Android o PC.</td>
+                    <td>Se despliega el cartel nativo de instalación. Al aceptar, el botón de la cabecera se oculta automáticamente.</td>
+                </tr>
+                <tr>
+                    <td><strong>Detección iOS</strong></td>
+                    <td>Navegar a la app desde Safari en un iPhone o iPad.</td>
+                    <td>Se detecta dinámicamente el agente y se muestra el botón "Instalar App".</td>
+                </tr>
+                <tr>
+                    <td><strong>Guía iOS Safari</strong></td>
+                    <td>Hacer clic en "Instalar App" en Safari en iPhone.</td>
+                    <td>Se abre el modal instructivo con el paso a paso gráfico ("Compartir" -> "Añadir a pantalla de inicio").</td>
+                </tr>
+                <tr>
+                    <td><strong>Detección de Versión</strong></td>
+                    <td>Cambiar la constante de caché de versión en <code>sw.js</code> del servidor.</td>
+                    <td>El cliente detecta automáticamente el cambio de versión en background y muestra el snackbar flotante de actualización.</td>
+                </tr>
+                <tr>
+                    <td><strong>Acción Actualizar</strong></td>
+                    <td>Presionar "Actualizar" en el snackbar flotante de actualización.</td>
+                    <td>El Service Worker se actualiza inmediatamente y la página web se recarga mostrando la versión actualizada de forma transparente.</td>
+                </tr>
+                <tr>
+                    <td><strong>Comprobación en Caliente</strong></td>
+                    <td>Mantener la aplicación abierta sin recargar durante más de 15 segundos.</td>
+                    <td>Se ejecutan solicitudes periódicas transparentes en segundo plano al Service Worker para verificar que no haya versiones nuevas en el servidor.</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <p style="text-align: center; font-size: 0.8rem; margin-top: 40px; border-top: 1px solid var(--borde); padding-top: 20px; color: var(--texto-secundario);">
+            Mi Lector PDF — Desarrollo de Interfaz Premium e Innovación PWA.
+        </p>
+    </div>
+
+</body>
+</html>
