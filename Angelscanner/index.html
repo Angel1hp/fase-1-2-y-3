@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AngelScanner - Escáner de Documentos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48x48.png">
+<link rel="shortcut icon" href="icons/favicon.ico">
+
+<!-- ========== APPLE TOUCH ICON (iOS) ========== -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="57x57" href="icons/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="72x72" href="icons/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="icons/apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="icons/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icons/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="icons/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167x167.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
+
+    <meta name="theme-color" content="#4CAF50">
+    
+    <!-- Meta tags para PWA y iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AngelScanner">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="AngelScanner">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="msapplication-TileColor" content="#4CAF50">
+    <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+    
+    <!-- Para iOS -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+    
+    <!-- Librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>👼 AngelScanner</h1>
+            <div class="header-buttons">
+                <button id="multiSelectBtn" class="icon-btn" title="Selección múltiple">📑</button>
+                <button id="generatePdfBtn" class="icon-btn" title="Generar PDF">📄➡️PDF</button>
+                <button id="settingsBtn" class="icon-btn">⚙️</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Vista previa de la cámara -->
+            <div class="camera-container" id="cameraContainer">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display:none;"></canvas>
+                <div class="controls-overlay">
+                    <button id="captureBtn" class="capture-btn">📸 Tomar Foto</button>
+                    <button id="switchCameraBtn" class="switch-camera-btn">🔄 Cambiar Cámara</button>
+                </div>
+            </div>
+
+            <!-- Botones de acción adicionales -->
+            <div class="action-buttons">
+                <button id="attachFromGalleryBtn" class="action-btn">📁 Adjuntar desde Galería</button>
+                <button id="clearSelectionBtn" class="action-btn" style="display:none;">🗑️ Limpiar Selección</button>
+            </div>
+
+            <!-- Visor de documentos escaneados -->
+            <div class="scanned-docs-container" id="scannedDocs">
+                <div class="docs-header">
+                    <h2>Documentos Escaneados</h2>
+                    <div class="selection-info" id="selectionInfo" style="display:none;">
+                        <span id="selectedCount">0</span> documentos seleccionados
+                        <button id="generateSelectedPdfBtn" class="small-btn">Generar PDF</button>
+                    </div>
+                </div>
+                <div id="documentsList" class="documents-grid"></div>
+            </div>
+        </main>
+
+        <!-- Modal para editar documento -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Editar Documento</h3>
+                <canvas id="editCanvas"></canvas>
+                <div class="edit-controls">
+                    <button id="cropBtn">✂️ Recortar</button>
+                    <button id="enhanceBtn">✨ Mejorar</button>
+                    <button id="grayscaleBtn">⚫ Escala de Grises</button>
+                    <button id="brightnessBtn">☀️ Brillo</button>
+                    <button id="rotateLeftBtn">🔄 Rotar Izquierda</button>
+                    <button id="rotateRightBtn">🔄 Rotar Derecha</button>
+                    <button id="saveEditBtn">💾 Guardar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para generar PDF -->
+        <div id="pdfModal" class="modal">
+            <div class="modal-content">
+                <span class="close-pdf">&times;</span>
+                <h3>📄 Generar PDF</h3>
+                <div class="pdf-options">
+                    <label>
+                        <input type="text" id="pdfFileName" placeholder="Nombre del archivo" value="yacoscan_documento">
+                    </label>
+                    <label>
+                        <select id="pdfQuality">
+                            <option value="low">Calidad Baja (Archivo pequeño)</option>
+                            <option value="medium" selected>Calidad Media (Recomendado)</option>
+                            <option value="high">Calidad Alta (Archivo grande)</option>
+                        </select>
+                    </label>
+                    <label>
+                        <select id="pdfOrientation">
+                            <option value="portrait">Vertical</option>
+                            <option value="landscape">Horizontal</option>
+                        </select>
+                    </label>
+                    <div class="preview-container">
+                        <h4>Vista previa de páginas:</h4>
+                        <div id="pdfPreview" class="pdf-preview"></div>
+                    </div>
+                    <button id="confirmGeneratePdfBtn" class="generate-pdf-btn">🎯 Generar PDF Ahora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scanner.js"></script>
+</body>
+</html>

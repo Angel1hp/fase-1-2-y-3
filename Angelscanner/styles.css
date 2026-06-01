@@ -1,0 +1,758 @@
+/* ==========================================================================
+   ANGELSCANER - SISTEMA DE DISEÑO PREMIUM (styles.css)
+   ========================================================================== */
+
+/* --- Importación de Fuentes --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* --- Variables y Diseño del Sistema (Temas) --- */
+:root {
+    /* Paleta de Colores de Alta Fidelidad (Angel Emerald & Golden Halo) */
+    --primary-hsl: 142, 72%, 29%;
+    --primary: hsl(var(--primary-hsl));
+    --primary-light: hsl(142, 69%, 45%);
+    --primary-dark: hsl(142, 76%, 18%);
+    --primary-glow: rgba(46, 125, 50, 0.35);
+
+    --accent-hsl: 45, 100%, 50%; /* Golden Angel accent color */
+    --accent: hsl(var(--accent-hsl));
+    --accent-glow: rgba(255, 193, 7, 0.3);
+
+    --blue-highlight: #2196F3;
+    --blue-glow: rgba(33, 150, 243, 0.2);
+
+    --danger: #ef5350;
+    --danger-dark: #c62828;
+    --danger-glow: rgba(239, 83, 80, 0.3);
+
+    /* Light Theme (Por defecto) */
+    --bg-app: linear-gradient(135deg, #f4f7f6 0%, #e9efec 100%);
+    --bg-panel: rgba(255, 255, 255, 0.75);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-highlight: rgba(255, 255, 255, 0.6);
+    --text-main: #263238;
+    --text-muted: #546e7a;
+    --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    --glass-blur: blur(16px);
+}
+
+/* Modo Oscuro Automático y Premium */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-app: linear-gradient(135deg, #0d1310 0%, #151e19 100%);
+        --bg-panel: rgba(20, 28, 24, 0.75);
+        --border-color: rgba(255, 255, 255, 0.08);
+        --border-highlight: rgba(255, 255, 255, 0.05);
+        --text-main: #eceff1;
+        --text-muted: #90a4ae;
+        --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* --- Reseteo Estructural --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-app);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+/* --- Contenedor Principal (Layout) --- */
+.app-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 24px;
+}
+
+/* --- Cabecera Premium (Sticky Glassmorphic) --- */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: var(--bg-panel);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-btn {
+    border: 1px solid var(--border-color);
+    background: var(--bg-panel);
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: var(--card-shadow);
+}
+
+.icon-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: var(--primary-light);
+    box-shadow: 0 6px 15px var(--primary-glow);
+}
+
+.icon-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+/* --- Contenido Principal --- */
+main {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+/* --- Contenedor de la Cámara (Estilo Premium) --- */
+.camera-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #000;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow), 0 0 0 1px var(--border-color);
+    border: 2px solid var(--border-highlight);
+    transform: translateZ(0); /* Aceleración por hardware */
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.controls-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* Botón de Captura */
+.capture-btn {
+    background: radial-gradient(circle, #ffffff 60%, #e0e0e0 100%);
+    border: 4px solid var(--primary);
+    color: var(--primary-dark);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.25), 0 0 0 4px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: buttonPulse 2s infinite ease-in-out;
+}
+
+@keyframes buttonPulse {
+    0% { box-shadow: 0 8px 25px rgba(255,255,255,0.2), 0 0 0 0 rgba(76, 175, 80, 0.4); }
+    70% { box-shadow: 0 8px 25px rgba(255,255,255,0.2), 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 8px 25px rgba(255,255,255,0.2), 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.capture-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4), 0 0 0 6px rgba(76, 175, 80, 0.5);
+}
+
+.capture-btn:active {
+    transform: scale(0.95);
+}
+
+.switch-camera-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    font-size: 13px;
+}
+
+.switch-camera-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg);
+}
+
+/* --- Botones de Acción (Galería, etc.) --- */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.action-btn {
+    flex: 1;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 14px 20px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-light);
+    background: var(--primary-glow);
+}
+
+#clearSelectionBtn {
+    background: var(--danger-glow);
+    border-color: rgba(239, 83, 80, 0.2);
+    color: var(--danger);
+}
+
+#clearSelectionBtn:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger-dark);
+}
+
+/* --- Visor de Documentos Escaneados --- */
+.scanned-docs-container {
+    background: var(--bg-panel);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+}
+
+.docs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.docs-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Info de Selección */
+.selection-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--blue-glow);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue-highlight);
+}
+
+.small-btn {
+    background: var(--blue-highlight);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.small-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px var(--blue-glow);
+}
+
+/* Grid de Tarjetas */
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+/* Tarjeta de Documento (Premium Hover) */
+.doc-card {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--border-highlight);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.doc-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.doc-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-light);
+}
+
+.doc-card:hover img {
+    transform: scale(1.05);
+}
+
+/* Modo Selección */
+.doc-card.select-mode {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.doc-card.selected {
+    border: 3px solid var(--blue-highlight);
+    box-shadow: 0 0 20px var(--blue-glow);
+}
+
+/* Checkbox para selección */
+.select-checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 22px;
+    height: 22px;
+    accent-color: var(--blue-highlight);
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Botón Eliminar Tarjeta */
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(239, 83, 80, 0.85);
+    color: white;
+    border: none;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.delete-btn:hover {
+    background: var(--danger);
+    transform: scale(1.15);
+    box-shadow: 0 4px 10px var(--danger-glow);
+}
+
+.doc-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+    color: white;
+    font-size: 9px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- Modales Premium --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 200;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 500px;
+    margin: 40px auto;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.close, .close-pdf {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 28px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close:hover, .close-pdf:hover {
+    color: var(--danger);
+}
+
+.modal h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* --- Editor de Canvas --- */
+#editCanvas {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    background: #1e1e1e;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.edit-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.edit-controls button {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-controls button:hover {
+    border-color: var(--primary);
+    background: var(--primary-glow);
+}
+
+#saveEditBtn {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#saveEditBtn:hover {
+    box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+/* --- Opciones de PDF --- */
+.pdf-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pdf-options input, .pdf-options select {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-panel);
+    color: var(--text-main);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s ease;
+}
+
+.pdf-options input:focus, .pdf-options select:focus {
+    border-color: var(--primary-light);
+}
+
+/* Vista previa de PDF */
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pdf-preview {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 8px 4px;
+}
+
+.preview-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    gap: 4px;
+}
+
+.preview-item img {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.preview-item small {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.generate-pdf-btn {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.generate-pdf-btn:hover {
+    box-shadow: 0 6px 20px var(--primary-glow);
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   GLASSMORPHIC PWA UPDATE TOAST (NOTIFICACIÓN PREMIUM)
+   ========================================================================== */
+.update-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(150%);
+    width: 90%;
+    max-width: 450px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 16px 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15), opacity 0.4s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Modo oscuro adaptado para el Toast */
+@media (prefers-color-scheme: dark) {
+    .update-toast {
+        background: rgba(20, 28, 24, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+}
+
+.update-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.update-toast-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.update-toast-icon {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--accent) 0%, #ff8f00 100%);
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px var(--accent-glow);
+    animation: rotatePulse 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes rotatePulse {
+    0% { transform: scale(1) rotate(0deg); }
+    40% { transform: scale(1.1) rotate(180deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
+    90% { transform: scale(1) rotate(360deg); }
+    100% { transform: scale(1) rotate(360deg); }
+}
+
+.update-toast-text {
+    flex: 1;
+}
+
+.update-toast-text h4 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.update-toast-text p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.update-toast-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.update-btn-action {
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+.update-btn-action.accept {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+    color: white;
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.update-btn-action.accept:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px var(--primary-glow);
+}
+
+.update-btn-action.accept:active {
+    transform: translateY(0);
+}
+
+.update-btn-action.dismiss {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    .update-btn-action.dismiss {
+        background: rgba(255, 255, 255, 0.05);
+    }
+}
+
+.update-btn-action.dismiss:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-main);
+}
+
+@media (prefers-color-scheme: dark) {
+    .update-btn-action.dismiss:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* --- Animaciones Generales --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    15% { opacity: 1; transform: translate(-50%, 0); }
+    85% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); }
+}
